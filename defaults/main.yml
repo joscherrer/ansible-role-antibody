@@ -1,0 +1,5 @@
+---
+# defaults file for ansible-role-antibody
+
+antibody_force_install: false
+antibody_install_version: "5.4.2"

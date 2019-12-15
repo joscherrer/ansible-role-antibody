@@ -1,0 +1,40 @@
+---
+# tasks file for ansible-role-antibody
+
+- name: Getting latest antibody version
+  shell: git ls-remote --tags https://github.com/getantibody/antibody.git | sed 's/.*\///' | grep "v" | sed 's/v//' | sort | tail -n1
+  register: antibody_git
+  changed_when: false
+
+- name: Checking if antibody is installed
+  stat:
+    path: /usr/bin/antibody
+  register: antibody_installed
+
+- name: Getting current antibody version
+  shell: /usr/bin/antibody --version 2>&1 | egrep -o "[0-9]*\.[0-9]*(\.[0-9]*)?"
+  when: antibody_installed.stat.exists
+  register: antibody_local
+  changed_when: false
+
+- name: Set forced version
+  set_fact:
+    antibody_git_version: "{{ antibody_install_version }}"
+  when: 
+    - antibody_force_install | bool
+    - antibody_install_version is defined
+
+- name: Set latest antibody version
+  set_fact:
+    antibody_git_version: "{{ antibody_git.stdout }}"
+  when: not antibody_force_install
+
+- name: Set local antibody version
+  set_fact:
+    antibody_local_version: "{{ antibody_local.stdout }}"
+  when: antibody_installed.stat.exists
+
+- include_tasks: install.yml
+  when: not antibody_installed.stat.exists or 
+        antibody_force_install or 
+        (antibody_git_version != antibody_local_version)

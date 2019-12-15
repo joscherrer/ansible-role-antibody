@@ -1,0 +1,25 @@
+- name: Downloading antibody
+  uri:
+    url: https://github.com/getantibody/antibody/releases/download/v{{ antibody_git_version }}/antibody_Linux_x86_64.tar.gz
+    dest: "/tmp/antibody-{{ antibody_git_version }}.tar.gz"
+    follow_redirects: all
+    status_code: [200, 304]
+
+- name: Creating antibody folder
+  file:
+    path: "/opt/antibody/"
+    state: directory
+
+- name: Extracting antibody archive
+  unarchive:
+    src: "/tmp/antibody-{{ antibody_git_version }}.tar.gz"
+    dest: "/opt/antibody/"
+    remote_src: yes
+  become: yes
+
+- name: Linking antibody
+  file:
+    path: /usr/bin/antibody
+    src: /opt/antibody/antibody
+    state: link
+    mode: 0755

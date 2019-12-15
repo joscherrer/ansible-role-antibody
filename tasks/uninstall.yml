@@ -1,0 +1,11 @@
+- name: Uninstalling antibody
+  make:
+    target: uninstall
+    chdir: "/opt/antibody-{{ antibody_local_version }}"
+  become: yes
+
+- name: Removing source folder
+  become: true
+  file:
+    path: "/opt/antibody-{{ antibody_local_version }}"
+    state: absent
