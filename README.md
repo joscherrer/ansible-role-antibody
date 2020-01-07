@@ -1,7 +1,7 @@
-Role Name
+Antibody
 =========
 
-A brief description of the role goes here.
+This role installs antibody
 
 Requirements
 ------------
@@ -19,7 +19,7 @@ antibody_install_version: "4.2.0"
 Dependencies
 ------------
 
-Git
+geerlingguy.git
 
 Example Playbook
 ----------------
